@@ -1,225 +1,164 @@
 # simplepv
 
-This application was generated using JHipster 7.4.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v7.4.0](https://www.jhipster.tech/documentation-archive/v7.4.0).
+类似不蒜子的 PV 统计器
 
-## Development
+## step0
 
-Before you can build this project, you must install and configure the following dependencies on your machine:
+下载编译:
 
-1. [Node.js][]: We use Node to run a development web server and build the project.
-   Depending on your system, you can install Node either from source or as a pre-packaged bundle.
-
-After installing Node, you should be able to run the following command to install development tools.
-You will only need to run this command when dependencies change in [package.json](package.json).
-
-```
-npm install
+```bash
+git clone https://github.com/jadepeng/simplepv
+cd simplepv
+mvn package -DskipTests
 ```
 
-We use npm scripts and [Angular CLI][] with [Webpack][] as our build system.
+部署 web 程序
 
-Run the following commands in two separate terminals to create a blissful development experience where your browser
-auto-refreshes when files change on your hard drive.
-
-```
-./mvnw
-npm start
+```bash
+    java -jar simplepv-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 ```
 
-Npm is also used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by
-specifying a newer version in [package.json](package.json). You can also run `npm update` and `npm install` to manage dependencies.
-Add the `help` flag on any command to see how you can use it. For example, `npm help update`.
-
-The `npm run` command will list all of the scripts available to run for this project.
-
-### PWA Support
-
-JHipster ships with PWA (Progressive Web App) support, and it's turned off by default. One of the main components of a PWA is a service worker.
-
-The service worker initialization code is disabled by default. To enable it, uncomment the following code in `src/main/webapp/app/app.module.ts`:
-
-```typescript
-ServiceWorkerModule.register('ngsw-worker.js', { enabled: false }),
-```
-
-### Managing dependencies
-
-For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
+输出
 
 ```
-npm install --save --save-exact leaflet
-```
-
-To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
-
-```
-npm install --save-dev --save-exact @types/leaflet
-```
-
-Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack][] knows about them:
-Edit [src/main/webapp/app/app.module.ts](src/main/webapp/app/app.module.ts) file:
-
-```
-import 'leaflet/dist/leaflet.js';
-```
-
-Edit [src/main/webapp/content/scss/vendor.scss](src/main/webapp/content/scss/vendor.scss) file:
+2021-12-02 20:25:49.014  INFO 35916 --- [           main] com.jadepeng.simplepv.SimplepvApp        : The following profiles are active: prod
+2021-12-02 20:25:53.585  INFO 35916 --- [           main] c.j.simplepv.config.WebConfigurer        : Web application configuration, using profiles: prod
+2021-12-02 20:25:53.589  INFO 35916 --- [           main] c.j.simplepv.config.WebConfigurer        : Web application fully configured
+2021-12-02 20:26:02.580  INFO 35916 --- [           main] org.jboss.threads                        : JBoss Threads version 3.1.0.Final
+2021-12-02 20:26:02.697  INFO 35916 --- [           main] com.jadepeng.simplepv.SimplepvApp        : Started SimplepvApp in 15.936 seconds (JVM running for 16.79)
+2021-12-02 20:26:02.707  INFO 35916 --- [           main] com.jadepeng.simplepv.SimplepvApp        :
+----------------------------------------------------------
+	Application 'simplepv' is running! Access URLs:
+	Local: 		http://localhost:58080/
+	External: 	http://172.1.1.12:58080/
+	Profile(s): 	[prod]
+----------------------------------------------------------
 
 ```
-@import '~leaflet/dist/leaflet.css';
+
+本程序默认使用 h2 作为存储，所以不用另外安装 mysql。
+
+## step1
+
+引用 client.js， 也可以直接放入到网页中
+
+```js
+var bszCaller, bszTag, scriptTag, ready;
+
+var t,
+  e,
+  n,
+  a = !1,
+  c = [];
+
+// 修复Node同构代码的问题
+if (typeof document !== 'undefined') {
+  (ready = function (t) {
+    return (
+      a || 'interactive' === document.readyState || 'complete' === document.readyState
+        ? t.call(document)
+        : c.push(function () {
+            return t.call(this);
+          }),
+      this
+    );
+  }),
+    (e = function () {
+      for (var t = 0, e = c.length; t < e; t++) c[t].apply(document);
+      c = [];
+    }),
+    (n = function () {
+      a ||
+        ((a = !0),
+        e.call(window),
+        document.removeEventListener
+          ? document.removeEventListener('DOMContentLoaded', n, !1)
+          : document.attachEvent &&
+            (document.detachEvent('onreadystatechange', n), window == window.top && (clearInterval(t), (t = null))));
+    }),
+    document.addEventListener
+      ? document.addEventListener('DOMContentLoaded', n, !1)
+      : document.attachEvent &&
+        (document.attachEvent('onreadystatechange', function () {
+          /loaded|complete/.test(document.readyState) && n();
+        }),
+        window == window.top &&
+          (t = setInterval(function () {
+            try {
+              a || document.documentElement.doScroll('left');
+            } catch (t) {
+              return;
+            }
+            n();
+          }, 5)));
+}
+
+bszCaller = {
+  fetch: function (t, e) {
+    var n = 'SimplePVCallback' + Math.floor(1099511627776 * Math.random());
+    t = t.replace('=SimplePVCallback', '=' + n);
+    (scriptTag = document.createElement('SCRIPT')),
+      (scriptTag.type = 'text/javascript'),
+      (scriptTag.defer = !0),
+      (scriptTag.src = t),
+      document.getElementsByTagName('HEAD')[0].appendChild(scriptTag);
+    window[n] = this.evalCall(e);
+  },
+  evalCall: function (e) {
+    return function (t) {
+      ready(function () {
+        try {
+          e(t),
+            scriptTag && scriptTag.parentElement && scriptTag.parentElement.removeChild && scriptTag.parentElement.removeChild(scriptTag);
+        } catch (t) {
+          console.log(t), bszTag.hides();
+        }
+      });
+    };
+  },
+};
+
+const fetch = siteUrl => {
+  bszTag && bszTag.hides();
+  bszCaller.fetch(`${siteUrl}/api/pv/${window.btoa(location.href)}?jsonpCallback=SimplePVCallback`, function (t) {
+    bszTag.texts(t), bszTag.shows();
+  });
+};
+
+bszTag = {
+  bszs: ['site_pv', 'page_pv'],
+  texts: function (n) {
+    this.bszs.map(function (t) {
+      var e = document.getElementById('busuanzi_value_' + t);
+      e && (e.innerHTML = n[t]);
+    });
+  },
+  hides: function () {
+    this.bszs.map(function (t) {
+      var e = document.getElementById('busuanzi_container_' + t);
+      e && (e.style.display = 'none');
+    });
+  },
+  shows: function () {
+    this.bszs.map(function (t) {
+      var e = document.getElementById('busuanzi_container_' + t);
+      e && (e.style.display = 'inline');
+    });
+  },
+};
+
+if (typeof document !== 'undefined') {
+  fetch('http://localhost:8080/');
+}
 ```
 
-Note: There are still a few other things remaining to do for Leaflet that we won't detail here.
+上面 fetch 的地址，填写 webserver 部署后的地址。
 
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
+## step2
 
-### Using Angular CLI
+在需要显示 pv 的地方
 
-You can also use [Angular CLI][] to generate some custom client code.
-
-For example, the following command:
-
+```html
+<span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+<span id="busuanzi_container_page_pv">本文总阅读量<span id="busuanzi_value_page_pv"></span>次</span>
 ```
-ng generate component my-component
-```
-
-will generate few files:
-
-```
-create src/main/webapp/app/my-component/my-component.component.html
-create src/main/webapp/app/my-component/my-component.component.ts
-update src/main/webapp/app/app.module.ts
-```
-
-### JHipster Control Center
-
-JHipster Control Center can help you manage and control your application(s). You can start a local control center server (accessible on http://localhost:7419) with:
-
-```
-docker-compose -f src/main/docker/jhipster-control-center.yml up
-```
-
-## Building for production
-
-### Packaging as jar
-
-To build the final jar and optimize the simplepv application for production, run:
-
-```
-./mvnw -Pprod clean verify
-```
-
-This will concatenate and minify the client CSS and JavaScript files. It will also modify `index.html` so it references these new files.
-To ensure everything worked, run:
-
-```
-java -jar target/*.jar
-```
-
-Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
-
-Refer to [Using JHipster in production][] for more details.
-
-### Packaging as war
-
-To package your application as a war in order to deploy it to an application server, run:
-
-```
-./mvnw -Pprod,war clean verify
-```
-
-## Testing
-
-To launch your application's tests, run:
-
-```
-./mvnw verify
-```
-
-### Client tests
-
-Unit tests are run by [Jest][]. They're located in [src/test/javascript/](src/test/javascript/) and can be run with:
-
-```
-npm test
-```
-
-For more information, refer to the [Running tests page][].
-
-### Code quality
-
-Sonar is used to analyse code quality. You can start a local Sonar server (accessible on http://localhost:9001) with:
-
-```
-docker-compose -f src/main/docker/sonar.yml up -d
-```
-
-Note: we have turned off authentication in [src/main/docker/sonar.yml](src/main/docker/sonar.yml) for out of the box experience while trying out SonarQube, for real use cases turn it back on.
-
-You can run a Sonar analysis with using the [sonar-scanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or by using the maven plugin.
-
-Then, run a Sonar analysis:
-
-```
-./mvnw -Pprod clean verify sonar:sonar
-```
-
-If you need to re-run the Sonar phase, please be sure to specify at least the `initialize` phase since Sonar properties are loaded from the sonar-project.properties file.
-
-```
-./mvnw initialize sonar:sonar
-```
-
-For more information, refer to the [Code quality page][].
-
-## Using Docker to simplify development (optional)
-
-You can use Docker to improve your JHipster development experience. A number of docker-compose configuration are available in the [src/main/docker](src/main/docker) folder to launch required third party services.
-
-For example, to start a mysql database in a docker container, run:
-
-```
-docker-compose -f src/main/docker/mysql.yml up -d
-```
-
-To stop it and remove the container, run:
-
-```
-docker-compose -f src/main/docker/mysql.yml down
-```
-
-You can also fully dockerize your application and all the services that it depends on.
-To achieve this, first build a docker image of your app by running:
-
-```
-./mvnw -Pprod verify jib:dockerBuild
-```
-
-Then run:
-
-```
-docker-compose -f src/main/docker/app.yml up -d
-```
-
-For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`jhipster docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
-
-## Continuous Integration (optional)
-
-To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
-
-[jhipster homepage and latest documentation]: https://www.jhipster.tech
-[jhipster 7.4.0 archive]: https://www.jhipster.tech/documentation-archive/v7.4.0
-[using jhipster in development]: https://www.jhipster.tech/documentation-archive/v7.4.0/development/
-[using docker and docker-compose]: https://www.jhipster.tech/documentation-archive/v7.4.0/docker-compose
-[using jhipster in production]: https://www.jhipster.tech/documentation-archive/v7.4.0/production/
-[running tests page]: https://www.jhipster.tech/documentation-archive/v7.4.0/running-tests/
-[code quality page]: https://www.jhipster.tech/documentation-archive/v7.4.0/code-quality/
-[setting up continuous integration]: https://www.jhipster.tech/documentation-archive/v7.4.0/setting-up-ci/
-[node.js]: https://nodejs.org/
-[npm]: https://www.npmjs.com/
-[webpack]: https://webpack.github.io/
-[browsersync]: https://www.browsersync.io/
-[jest]: https://facebook.github.io/jest/
-[leaflet]: https://leafletjs.com/
-[definitelytyped]: https://definitelytyped.org/
-[angular cli]: https://cli.angular.io/
