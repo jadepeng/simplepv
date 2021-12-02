@@ -1,0 +1,26 @@
+{
+  "simplepvApp": {
+    "pV": {
+      "home": {
+        "title": "PVS",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "创建新 PV",
+        "createOrEditLabel": "创建或编辑 PV",
+        "notFound": "No PVS found"
+      },
+      "created": "PV {{ param }} 创建成功",
+      "updated": "PV {{ param }} 更新成功",
+      "deleted": "PV {{ param }} 删除成功",
+      "delete": {
+        "question": "你确定要删除 PV {{ id }} 吗？"
+      },
+      "detail": {
+        "title": "PV"
+      },
+      "id": "ID",
+      "host": "Host",
+      "url": "Url",
+      "pv": "Pv"
+    }
+  }
+}

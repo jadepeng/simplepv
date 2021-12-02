@@ -1,0 +1,40 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="pV">
+      <h2 data-cy="pVDetailsHeading"><span jhiTranslate="simplepvApp.pV.detail.title">PV</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ pV.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="simplepvApp.pV.host">Host</span></dt>
+        <dd>
+          <span>{{ pV.host }}</span>
+        </dd>
+        <dt><span jhiTranslate="simplepvApp.pV.url">Url</span></dt>
+        <dd>
+          <span>{{ pV.url }}</span>
+        </dd>
+        <dt><span jhiTranslate="simplepvApp.pV.pv">Pv</span></dt>
+        <dd>
+          <span>{{ pV.pv }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/pv', pV.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

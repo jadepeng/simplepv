@@ -1,0 +1,26 @@
+{
+  "simplepvApp": {
+    "pV": {
+      "home": {
+        "title": "PVS",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new PV",
+        "createOrEditLabel": "Create or edit a PV",
+        "notFound": "No PVS found"
+      },
+      "created": "A new PV is created with identifier {{ param }}",
+      "updated": "A PV is updated with identifier {{ param }}",
+      "deleted": "A PV is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete PV {{ id }}?"
+      },
+      "detail": {
+        "title": "PV"
+      },
+      "id": "ID",
+      "host": "Host",
+      "url": "Url",
+      "pv": "Pv"
+    }
+  }
+}
